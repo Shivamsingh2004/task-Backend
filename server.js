@@ -8,21 +8,9 @@ const app = express();
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
-
-    try {
-      if (
-        origin.endsWith(".vercel.app") ||
-        origin.startsWith("http://localhost")
-      ) {
-        return callback(null, true);
-      }
-    } catch (err) {
-      return callback(null, false);
-    }
-
-    return callback(new Error("CORS not allowed: " + origin));
+    return callback(null, true);
   },
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   credentials: true,
 };
 
