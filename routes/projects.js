@@ -126,8 +126,8 @@ router.put('/:id', auth, adminOnly, async (req, res) => {
 
     if (name) project.name = name;
     if (description !== undefined) project.description = description;
-    if (startDate !== undefined) project.startDate = startDate;
-    if (deadline !== undefined) project.deadline = deadline;
+    if (startDate !== undefined) project.startDate = startDate ? startDate : null;
+    if (deadline !== undefined) project.deadline = deadline ? deadline : null;
     if (priority) project.priority = priority;
     if (status) project.status = status;
 

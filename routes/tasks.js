@@ -105,14 +105,19 @@ router.get('/dashboard', auth, async (req, res) => {
     const completedTasks = tasks.filter((t) => t.status === 'done').length;
     const pendingTasks = tasks.filter((t) => t.status !== 'done').length;
     const inProgressTasks = tasks.filter((t) => t.status === 'in-progress').length;
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const sevenDaysFromNow = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+
     const overdueTasks = tasks.filter((t) => {
-      return t.status !== 'done' && t.dueDate && new Date(t.dueDate) < now;
+      if (t.status === 'done' || !t.dueDate) return false;
+      const d = new Date(t.dueDate);
+      return d < today;
     }).length;
 
-    const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
     const upcomingTasks = tasks.filter((t) => {
-      return t.status !== 'done' && t.dueDate &&
-        new Date(t.dueDate) >= now && new Date(t.dueDate) <= sevenDaysFromNow;
+      if (t.status === 'done' || !t.dueDate) return false;
+      const d = new Date(t.dueDate);
+      return d >= today && d <= sevenDaysFromNow;
     });
 
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -161,8 +166,8 @@ router.put('/:id', auth, async (req, res) => {
     if (status) task.status = status;
     if (title) task.title = title;
     if (description !== undefined) task.description = description;
-    if (assignedTo !== undefined) task.assignedTo = assignedTo;
-    if (dueDate !== undefined) task.dueDate = dueDate;
+    if (assignedTo !== undefined) task.assignedTo = assignedTo ? assignedTo : null;
+    if (dueDate !== undefined) task.dueDate = dueDate ? dueDate : null;
     if (priority) task.priority = priority;
 
     if (status === 'done' && oldStatus !== 'done') {
