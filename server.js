@@ -10,14 +10,21 @@ app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
 
+    const allowedOrigins = [
+      "https://task-frontend-xi-kohl.vercel.app",
+      "http://localhost:3000",
+      "http://localhost:5173"
+    ];
+
     if (
+      allowedOrigins.includes(origin) ||
       origin.endsWith(".vercel.app") ||
       origin.startsWith("http://localhost")
     ) {
       return callback(null, true);
     }
 
-    return callback(new Error("CORS not allowed"));
+    return callback(new Error(`CORS not allowed for origin: ${origin}`));
   },
   credentials: true
 }));
@@ -78,4 +85,4 @@ const PORT = process.env.PORT || 10000;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-});
+}); 
